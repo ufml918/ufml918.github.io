@@ -1,426 +1,248 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🎉 Happy Birthday! Mini‑Game</title>
-  <meta name="description" content="A tiny birthday game you can host on GitHub Pages. Catch the balloons!" />
+  <title>Choose Your Own Adventure – Birthday Edition</title>
   <style>
-    :root{
-      --bg: #0f1020; /* deep indigo */
-      --fg: #f6f7fb; /* near white */
-      --accent: #ff7ac6; /* pink */
-      --accent-2:#7ad7ff; /* cyan */
-      --card: #17182c;
-      --muted:#a7b0c0;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;}
-    body{
-      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Noto Sans", "Helvetica Neue", Arial;
-      color:var(--fg); background: radial-gradient(1250px 800px at 30% -10%, #1a1b37 0%, #0f1020 45%, #0b0c18 100%);
-      display:flex; align-items:center; justify-content:center;
-    }
-    .app{width:min(1100px, 100%); padding: clamp(12px, 2vw, 20px);}    
-    header{display:flex; gap:14px; align-items:center; justify-content:space-between; flex-wrap:wrap;}
-    .brand{display:flex; align-items:center; gap:12px}
-    .logo{width:44px; height:44px; border-radius:12px; display:grid; place-items:center; background:linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow:0 6px 20px rgba(122,215,255,.3)}
-    .logo span{font-size:24px}
-    h1{margin:0; font-size: clamp(22px, 4vw, 34px); letter-spacing:.3px}
-    .sub{color:var(--muted); font-size:.98rem}
-
-    .card{background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.00)); border:1px solid rgba(255,255,255,.08); border-radius:18px; padding:18px; box-shadow:0 8px 26px rgba(0,0,0,.25)}
-
-    .panel{display:grid; grid-template-columns: 1fr 380px; gap:18px}
-    @media (max-width: 980px){ .panel{grid-template-columns: 1fr} }
-
-    .hud{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
-    .hud .pill{background: rgba(255,255,255,.06); padding:8px 12px; border-radius:999px; font-weight:600}
-    .hud .pill b{color:var(--accent-2)}
-
-    .game-wrap{position:relative; aspect-ratio: 16/10; width:100%; background: radial-gradient(900px 600px at 60% -20%, rgba(255,255,255,.06), transparent 60%),
-                 linear-gradient(180deg, #10122a 0%, #0c0d1d 80%);
-      border:1px solid rgba(255,255,255,.08); border-radius:18px; overflow:hidden}
-    canvas#game{width:100%; height:100%; display:block}
-
-    .overlay{position:absolute; inset:0; display:grid; place-items:center; padding:24px; text-align:center; background:linear-gradient(180deg, rgba(15,16,32,.8), rgba(15,16,32,.6)); backdrop-filter: blur(4px)}
-    .overlay.hidden{display:none}
-
-    .btn{appearance:none; border:none; background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:#0b0c18; font-weight:800; letter-spacing:.3px; padding:12px 16px; border-radius:12px; cursor:pointer; transition: transform .06s ease; box-shadow:0 8px 24px rgba(122,215,255,.3)}
-    .btn:hover{transform: translateY(-1px)}
-    .btn.secondary{background:transparent; color:var(--fg); border:1px solid rgba(255,255,255,.12); box-shadow:none}
-
-    .side{display:flex; flex-direction:column; gap:14px}
-    .side .card{padding:16px}
-    .label{display:block; font-size:.9rem; color:var(--muted); margin-bottom:6px}
-    input[type="text"], input[type="number"]{width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.04); color:var(--fg)}
-
-    .touch-controls{display:none; gap:10px; margin-top:10px}
-    .touch-controls button{flex:1}
-    @media (hover:none) and (pointer:coarse){ .touch-controls{display:flex} }
-
-    footer{margin-top:18px; color:var(--muted); font-size:.92rem; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
-    a{color:var(--accent-2); text-decoration:none}
+    :root { --bg:#0f172a; --panel:#111827; --card:#0b1220; --ink:#e5e7eb; --muted:#94a3b8; --accent:#38bdf8; }
+    html,body{height:100%}
+    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Inter,Arial; background:radial-gradient(1000px 800px at 10% -10%, #1f2937 0, #0b1020 40%, #050812 100%); color:var(--ink)}
+    .wrap{max-width:960px;margin:32px auto;padding:0 16px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+    h1{font-size:clamp(1.1rem,3vw,1.6rem);margin:0;font-weight:700;letter-spacing:.3px}
+    .pill{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(180deg,#0b1324,#070a14);border:1px solid #1f2937;border-radius:999px;padding:8px 12px;color:var(--muted)}
+    .row{display:flex;gap:16px;align-items:stretch}
+    .col{flex:1}
+    .panel{background:linear-gradient(180deg,#0b1324,#070a14);border:1px solid #1f2937;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:16px}
+    .panel h2{margin:0 0 8px 0;font-size:1rem;color:var(--muted);font-weight:600}
+    textarea{width:100%;min-height:260px;background:#050a16;color:var(--ink);border:1px solid #1f2937;border-radius:12px;padding:12px;resize:vertical;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.95rem;line-height:1.4}
+    .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    button{appearance:none;border:1px solid #1f2937;background:linear-gradient(180deg,#0c162a,#08101f);color:var(--ink);padding:10px 12px;border-radius:12px;font-weight:600;cursor:pointer}
+    button:hover{border-color:#334155}
+    button.accent{background:linear-gradient(180deg,#0284c7,#0369a1);border-color:#0ea5e9}
+    button.ghost{background:transparent}
+    .muted{color:var(--muted);font-size:.9rem}
+    .player{display:flex;flex-direction:column;gap:12px}
+    .card{background:linear-gradient(180deg,#0a1428,#091124);border:1px solid #1f2937;border-radius:16px;padding:16px}
+    .title{font-size:1.1rem;font-weight:700;margin:0 0 4px}
+    .text{white-space:pre-wrap;line-height:1.6}
+    .choices{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .choice{display:block;text-align:left}
+    .toolbar{display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .breadcrumbs{display:flex;flex-wrap:wrap;gap:6px}
+    .crumb{font-size:.8rem;color:var(--muted);background:#0b1220;border:1px dashed #1f2937;border-radius:999px;padding:4px 8px}
+    .hidden{display:none}
+    .img-wrap{border-radius:12px;overflow:hidden;border:1px solid #1f2937}
+    img{max-width:100%;display:block}
+    @media (max-width:860px){.row{flex-direction:column}}
   </style>
 </head>
 <body>
-  <div class="app">
+  <div class="wrap">
     <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true"><span>🎂</span></div>
-        <div>
-          <h1>Happy Birthday <span id="friendNameHeading">Friend</span>! 🎉</h1>
-          <div class="sub">Catch the balloons to unlock your surprise message.</div>
-        </div>
-      </div>
-      <div class="hud">
-        <div class="pill">Score: <b id="score">0</b></div>
-        <div class="pill">Time: <b id="time">30</b>s</div>
-        <div class="pill">Level: <b id="level">1</b></div>
+      <h1>🎂 Birthday CYOA</h1>
+      <div class="pill">
+        <span id="mode-label">Edit Mode</span>
+        <button id="toggle-mode" class="ghost" title="Toggle editor / player">Toggle</button>
       </div>
     </header>
 
-    <section class="panel">
-      <div class="card game-wrap">
-        <canvas id="game" width="960" height="600" aria-label="Birthday Game Canvas"></canvas>
-
-        <!-- Start / End overlays -->
-        <div id="startOverlay" class="overlay">
-          <div>
-            <h2 style="margin-top:0">Ready to Play?</h2>
-            <p>Move the plate left/right to catch the falling balloons. Reach the goal before time runs out!</p>
-            <p style="opacity:.8">Desktop: ◀ ▶ keys • Mobile: on-screen buttons</p>
-            <div style="display:flex; gap:10px; justify-content:center; margin-top:12px">
-              <button class="btn" id="startBtn">Start Game</button>
-              <button class="btn secondary" id="howBtn">How to Play</button>
-            </div>
-          </div>
+    <div id="editor" class="row">
+      <div class="col panel">
+        <h2>✍️ Paste your story JSON</h2>
+        <textarea id="story-input" spellcheck="false"></textarea>
+        <div class="btns">
+          <button id="validate" class="accent">Validate & Start ▶</button>
+          <button id="import-json">Import JSON</button>
+          <button id="export-json">Export JSON</button>
+          <button id="copy-share">Copy Play Link</button>
+          <button id="load-sample" title="Load a tiny demo story">Load Example</button>
         </div>
-
-        <div id="endOverlay" class="overlay hidden">
-          <div>
-            <h2 id="endTitle">Great Job! 🎈</h2>
-            <p id="endMsg">You scored 0. 🎁 Tip: catching streaks boost your level!</p>
-            <div style="display:flex; gap:10px; justify-content:center; margin-top:12px">
-              <button class="btn" id="againBtn">Play Again</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Touch controls for mobile -->
-        <div class="touch-controls" aria-hidden="false">
-          <button class="btn secondary" id="leftBtn">◀</button>
-          <button class="btn secondary" id="rightBtn">▶</button>
-        </div>
-
-        <!-- Confetti canvas (overlayed) -->
-        <canvas id="confetti" width="960" height="600" style="position:absolute; inset:0; pointer-events:none"></canvas>
+        <p class="muted">Schema: <code>{ title, start, nodes: { [id]: { text, image?, end?, choices?: [{label,to}] } } }</code>. Use <code>end:true</code> to mark an ending.</p>
       </div>
+    </div>
 
-      <aside class="side">
-        <div class="card">
-          <label class="label" for="friendName">Friend's Name</label>
-          <input id="friendName" type="text" placeholder="e.g., Alex" />
+    <div id="player" class="player hidden">
+      <div class="toolbar">
+        <div class="breadcrumbs" id="crumbs"></div>
+        <div>
+          <button id="back">← Back</button>
+          <button id="restart" class="ghost">⟲ Restart</button>
         </div>
-        <div class="card">
-          <label class="label" for="duration">Round Duration (seconds)</label>
-          <input id="duration" type="number" min="15" max="120" step="5" value="30" />
-        </div>
-        <div class="card">
-          <label class="label" for="goal">Goal Score</label>
-          <input id="goal" type="number" min="5" max="100" step="1" value="25" />
-        </div>
-        <div class="card">
-          <label class="label">Custom Birthday Message</label>
-          <input id="birthdayMsg" type="text" placeholder="Type your surprise message here…" />
-        </div>
-        <div class="card">
-          <button class="btn" id="applyBtn" style="width:100%">Apply Settings</button>
-        </div>
-      </aside>
-    </section>
-
-    <footer>
-      <span>Made with ❤️ for birthdays • Host on <a href="https://pages.github.com/" target="_blank" rel="noreferrer noopener">GitHub Pages</a></span>
-      <span>Controls: Arrow keys or on‑screen buttons</span>
-    </footer>
+      </div>
+      <div class="card">
+        <div class="img-wrap hidden" id="img-wrap"><img id="node-img" alt=""/></div>
+        <h3 class="title" id="story-title">Your Adventure</h3>
+        <div class="text" id="node-text"></div>
+        <div class="choices" id="choices"></div>
+      </div>
+    </div>
   </div>
 
   <script>
-    // ====== Utilities ======
-    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+    const $ = (id)=>document.getElementById(id);
+    const state = { story:null, current:null, history:[] };
 
-    // Friendly name handling
-    const nameInput = document.getElementById('friendName');
-    const nameHeading = document.getElementById('friendNameHeading');
-    nameInput.addEventListener('input', () => nameHeading.textContent = nameInput.value || 'Friend');
-
-    // Settings
-    const durationEl = document.getElementById('duration');
-    const goalEl = document.getElementById('goal');
-    const msgEl = document.getElementById('birthdayMsg');
-    const applyBtn = document.getElementById('applyBtn');
-    applyBtn.addEventListener('click', () => {
-      GAME.ROUND_SECONDS = clamp(parseInt(durationEl.value || '30', 10), 15, 120);
-      GAME.GOAL = clamp(parseInt(goalEl.value || '25', 10), 5, 100);
-      GAME.customMessage = msgEl.value || '';
-      document.getElementById('time').textContent = GAME.ROUND_SECONDS;
-    });
-
-    // HUD
-    const scoreEl = document.getElementById('score');
-    const timeEl  = document.getElementById('time');
-    const levelEl = document.getElementById('level');
-
-    // Overlays
-    const startOverlay = document.getElementById('startOverlay');
-    const endOverlay = document.getElementById('endOverlay');
-    const startBtn = document.getElementById('startBtn');
-    const howBtn   = document.getElementById('howBtn');
-    const againBtn = document.getElementById('againBtn');
-
-    howBtn.addEventListener('click', () => {
-      alert('Catch balloons with the plate!\n\n• Arrow keys (or touch buttons) to move.\n• Catching streaks speed up spawns (level up).\n• Reach the goal score before the timer ends to reveal your birthday message.');
-    });
-
-    // Touch controls
-    const leftBtn = document.getElementById('leftBtn');
-    const rightBtn = document.getElementById('rightBtn');
-
-    // Game canvas
-    const canvas = document.getElementById('game');
-    const ctx = canvas.getContext('2d');
-
-    // Confetti canvas
-    const confettiCanvas = document.getElementById('confetti');
-    const cctx = confettiCanvas.getContext('2d');
-
-    const resizeCanvases = () => {
-      // Match displayed size
-      const rect = canvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      [canvas, confettiCanvas].forEach(cv => {
-        cv.width = Math.floor(rect.width * dpr);
-        cv.height = Math.floor(rect.height * dpr);
-        cv.style.width = rect.width + 'px';
-        cv.style.height = rect.height + 'px';
-      });
-      ctx.setTransform(dpr,0,0,dpr,0,0);
-      cctx.setTransform(dpr,0,0,dpr,0,0);
-    }
-    resizeCanvases();
-    window.addEventListener('resize', resizeCanvases);
-
-    // ====== Game State ======
-    const GAME = {
-      RUNNING:false,
-      ROUND_SECONDS: 30,
-      GOAL: 25,
-      customMessage: '',
-      score:0,
-      timeLeft: 30,
-      level:1,
-      streak:0,
-      plate:{ x: 100, y: 0, w: 120, h: 16, speed: 520 },
-      balloons:[],
-      lastSpawn: 0,
-      spawnEveryMs: 900,
-    };
-
-    const randColor = () => {
-      const colors = ['#ff7ac6','#ffd37a','#7ad7ff','#b3ff7a','#dba1ff'];
-      return colors[Math.floor(Math.random()*colors.length)]
-    }
-
-    const spawnBalloon = () => {
-      const radius = 16 + Math.random()*10;
-      const x = radius + Math.random()*(canvas.clientWidth - radius*2);
-      const vy = 120 + Math.random()*80 + GAME.level*20; // fall speed increases with level
-      const color = randColor();
-      GAME.balloons.push({x, y:-radius*2, r:radius, vy, color, caught:false});
-    }
-
-    const key = {left:false, right:false};
-    window.addEventListener('keydown', e => {
-      if(e.key === 'ArrowLeft') key.left = true;
-      if(e.key === 'ArrowRight') key.right = true;
-    });
-    window.addEventListener('keyup', e => {
-      if(e.key === 'ArrowLeft') key.left = false;
-      if(e.key === 'ArrowRight') key.right = false;
-    });
-
-    // Touch buttons hold behavior
-    let touchLeft = false, touchRight = false;
-    const setHold = (btn, setter) => {
-      btn.addEventListener('touchstart', (e)=>{ e.preventDefault(); setter(true); })
-      btn.addEventListener('touchend',   (e)=>{ e.preventDefault(); setter(false); })
-      btn.addEventListener('touchcancel',(e)=>{ e.preventDefault(); setter(false); })
-    }
-    setHold(leftBtn, v=>touchLeft=v);
-    setHold(rightBtn,v=>touchRight=v);
-
-    // ====== Confetti System (lightweight) ======
-    const confetti = [];
-    function launchConfetti(bursts=160){
-      confetti.length = 0;
-      const W = confettiCanvas.clientWidth, H = confettiCanvas.clientHeight;
-      for(let i=0;i<bursts;i++){
-        confetti.push({
-          x: Math.random()*W,
-          y: -10 - Math.random()*H*.3,
-          vx: -120 + Math.random()*240,
-          vy: 80 + Math.random()*220,
-          g: 220 + Math.random()*60,
-          s: 4 + Math.random()*3,
-          a: Math.random()*Math.PI*2,
-          va: -6 + Math.random()*12,
-          c: randColor(),
-          life: 2 + Math.random()*1.5
-        })
+    function setMode(mode){
+      if(mode==='play'){
+        $('editor').classList.add('hidden');
+        $('player').classList.remove('hidden');
+        $('mode-label').textContent='Play Mode';
+      } else {
+        $('editor').classList.remove('hidden');
+        $('player').classList.add('hidden');
+        $('mode-label').textContent='Edit Mode';
       }
-      confettiStartTime = performance.now();
-      showConfetti = true;
-    }
-    let showConfetti = false, confettiStartTime = 0;
-    function drawConfetti(dt){
-      if(!showConfetti){ cctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height); return; }
-      cctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
-      const W = confettiCanvas.clientWidth, H = confettiCanvas.clientHeight;
-      confetti.forEach(p=>{
-        p.x += p.vx*dt; p.y += p.vy*dt; p.vy += p.g*dt; p.a += p.va*dt;
-        // wrap horizontally
-        if(p.x < -20) p.x = W+20; if(p.x > W+20) p.x = -20;
-        // draw as a rotated rectangle
-        cctx.save();
-        cctx.translate(p.x, p.y);
-        cctx.rotate(p.a);
-        cctx.fillStyle = p.c;
-        cctx.fillRect(-p.s*0.6, -p.s*0.6, p.s, p.s*1.6);
-        cctx.restore();
-      })
-      if(performance.now()-confettiStartTime > 4000){ showConfetti = false; }
     }
 
-    // ====== Game Loop ======
-    let lastTime = performance.now();
-    function resetGame(){
-      GAME.score = 0; GAME.timeLeft = GAME.ROUND_SECONDS; GAME.level = 1; GAME.streak = 0; GAME.balloons = []; GAME.lastSpawn = 0; GAME.spawnEveryMs = 900; updateHUD();
-      const rect = canvas.getBoundingClientRect();
-      GAME.plate.w = clamp(rect.width*0.12, 90, 150); // responsive plate size
-      GAME.plate.h = 16; GAME.plate.x = rect.width/2 - GAME.plate.w/2; GAME.plate.y = rect.height - 40;
-    }
-
-    function startGame(){
-      resetGame();
-      startOverlay.classList.add('hidden');
-      endOverlay.classList.add('hidden');
-      GAME.RUNNING = true;
-    }
-
-    function endGame(){
-      GAME.RUNNING = false;
-      const win = GAME.score >= GAME.GOAL;
-      document.getElementById('endTitle').textContent = win ? `You did it, ${nameInput.value || 'Friend'}! 🎉` : 'Time\'s Up!';
-      const msg = win ? (GAME.customMessage ? GAME.customMessage : `Wishing you the happiest birthday, ${nameInput.value||'Friend'}!`) : 'Try again and go for a streak!';
-      document.getElementById('endMsg').textContent = `Score: ${GAME.score} · Goal: ${GAME.GOAL}. ${msg}`;
-      endOverlay.classList.remove('hidden');
-      if(win) launchConfetti(220);
-    }
-
-    function updateHUD(){ scoreEl.textContent = GAME.score; timeEl.textContent = Math.ceil(GAME.timeLeft); levelEl.textContent = GAME.level; }
-
-    function logic(dt){
-      // time
-      GAME.timeLeft -= dt; if(GAME.timeLeft <= 0){ GAME.timeLeft = 0; endGame(); }
-
-      // plate movement
-      const moveLeft = key.left || touchLeft; const moveRight = key.right || touchRight;
-      if(moveLeft)  GAME.plate.x -= GAME.plate.speed * dt;
-      if(moveRight) GAME.plate.x += GAME.plate.speed * dt;
-      const rect = canvas.getBoundingClientRect();
-      GAME.plate.x = clamp(GAME.plate.x, 0, rect.width - GAME.plate.w);
-
-      // spawn
-      GAME.lastSpawn += dt*1000;
-      if(GAME.lastSpawn >= GAME.spawnEveryMs){ GAME.lastSpawn = 0; spawnBalloon(); }
-
-      // update balloons
-      GAME.balloons.forEach(b=>{ b.y += b.vy * dt; });
-
-      // collisions
-      const px = GAME.plate.x, py = GAME.plate.y, pw = GAME.plate.w, ph = GAME.plate.h;
-      GAME.balloons.forEach(b => {
-        if(!b.caught && b.y + b.r >= py && b.y - b.r <= py + ph){
-          if(b.x >= px && b.x <= px + pw){
-            b.caught = true; GAME.score++; GAME.streak++; if(GAME.streak % 5 === 0){ GAME.level++; GAME.spawnEveryMs = Math.max(380, GAME.spawnEveryMs - 90); }
+    function validateStory(raw){
+      let story;
+      try{ story = JSON.parse(raw); }catch(e){ throw new Error('Invalid JSON: '+e.message); }
+      if(!story || typeof story!=='object') throw new Error('Story must be an object.');
+      if(typeof story.title!=='string') throw new Error('Missing string "title"');
+      if(typeof story.start!=='string') throw new Error('Missing string "start" node id');
+      if(!story.nodes || typeof story.nodes!=='object') throw new Error('Missing "nodes" map');
+      if(!story.nodes[story.start]) throw new Error('Start node "'+story.start+'" not found');
+      for(const [id,node] of Object.entries(story.nodes)){
+        if(!node || typeof node!=='object') throw new Error('Node '+id+' must be an object');
+        if(typeof node.text!=='string') throw new Error('Node '+id+' missing string "text"');
+        if(node.choices){
+          if(!Array.isArray(node.choices)) throw new Error('Node '+id+' choices must be an array');
+          for(const c of node.choices){
+            if(typeof c.label!=='string' || typeof c.to!=='string') throw new Error('Node '+id+' has invalid choice {label,to}');
+            if(!story.nodes[c.to]) throw new Error('Choice from '+id+' points to missing node "'+c.to+'"');
           }
         }
-      })
-
-      // prune
-      GAME.balloons = GAME.balloons.filter(b => !b.caught && b.y - b.r < rect.height + 40);
-
-      updateHUD();
+      }
+      return story;
     }
 
     function render(){
-      // clear
-      ctx.clearRect(0,0,canvas.width, canvas.height);
-
-      // subtle stars
-      const w = canvas.clientWidth, h = canvas.clientHeight;
-      ctx.globalAlpha = .2;
-      for(let i=0;i<20;i++){ ctx.fillStyle = '#ffffff'; ctx.fillRect(((i*53)%w), (i*i*17%h), 2, 2);} ctx.globalAlpha = 1;
-
-      // plate
-      ctx.fillStyle = 'rgba(255,255,255,.85)';
-      const r = 10; // roundness
-      const x = GAME.plate.x, y = GAME.plate.y, W = GAME.plate.w, H = GAME.plate.h;
-      ctx.beginPath();
-      ctx.moveTo(x+r, y);
-      ctx.arcTo(x+W, y, x+W, y+H, r);
-      ctx.arcTo(x+W, y+H, x, y+H, r);
-      ctx.arcTo(x, y+H, x, y, r);
-      ctx.arcTo(x, y, x+W, y, r);
-      ctx.closePath();
-      ctx.fill();
-
-      // balloons
-      GAME.balloons.forEach(b=>{
-        // string
-        ctx.strokeStyle = 'rgba(255,255,255,.25)';
-        ctx.beginPath(); ctx.moveTo(b.x, b.y + b.r); ctx.lineTo(b.x, b.y + b.r + 18); ctx.stroke();
-        // body
-        ctx.fillStyle = b.color;
-        ctx.beginPath(); ctx.ellipse(b.x, b.y, b.r * 0.9, b.r, 0, 0, Math.PI * 2); ctx.fill();
-        // knot
-        ctx.fillRect(b.x - 2, b.y + b.r - 2, 4, 4);
-      })
-
-      // goal indicator line
-      ctx.fillStyle = 'rgba(255,255,255,.08)';
-      const pct = clamp(GAME.score / Math.max(1, GAME.GOAL), 0, 1);
-      ctx.fillRect(0, 6, canvas.clientWidth * pct, 4);
+      const node = state.story.nodes[state.current];
+      $('story-title').textContent = state.story.title;
+      $('node-text').textContent = node.text;
+      if(node.image){
+        $('img-wrap').classList.remove('hidden');
+        $('node-img').src = node.image;
+      } else {
+        $('img-wrap').classList.add('hidden');
+        $('node-img').removeAttribute('src');
+      }
+      const crumbs = state.history.concat(state.current).map(id=>`<span class="crumb">${id}</span>`).join('');
+      $('crumbs').innerHTML = crumbs;
+      const box = $('choices');
+      box.innerHTML = '';
+      const isEnd = !!node.end || !node.choices || node.choices.length===0;
+      if(isEnd){
+        const b = document.createElement('button');
+        b.textContent = '🎉 The End — Play Again';
+        b.className='choice';
+        b.onclick = restart;
+        box.appendChild(b);
+      } else {
+        for(const c of node.choices){
+          const btn = document.createElement('button');
+          btn.className='choice';
+          btn.textContent = '• ' + c.label;
+          btn.onclick = () => go(c.to);
+          box.appendChild(btn);
+        }
+      }
     }
 
-    function frame(){
-      const now = performance.now();
-      const dt = Math.min((now - lastTime)/1000, 0.05); // clamp big jumps
-      lastTime = now;
-      if(GAME.RUNNING){ logic(dt); }
+    function go(nextId){
+      state.history.push(state.current);
+      state.current = nextId;
       render();
-      drawConfetti(dt);
-      requestAnimationFrame(frame);
     }
-    requestAnimationFrame(frame);
 
-    startBtn.addEventListener('click', startGame);
-    againBtn.addEventListener('click', () => { startOverlay.classList.add('hidden'); endOverlay.classList.add('hidden'); startGame(); });
+    function back(){
+      if(state.history.length===0) return;
+      state.current = state.history.pop();
+      render();
+    }
 
-    // Initialize heading name if provided via URL, e.g., ?name=Alex
-    const qs = new URLSearchParams(location.search);
-    if(qs.get('name')){ nameInput.value = qs.get('name'); nameHeading.textContent = qs.get('name'); }
+    function restart(){
+      state.history = [];
+      state.current = state.story.start;
+      render();
+    }
+
+    function exportJSON(){
+      const blob = new Blob([$('story-input').value], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = (state.story?.title || 'cyoa') + '.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function importJSON(){
+      const input = document.createElement('input');
+      input.type='file'; input.accept='.json,application/json';
+      input.onchange = () => {
+        const file = input.files[0]; if(!file) return;
+        file.text().then(txt=>{ $('story-input').value = txt; });
+      };
+      input.click();
+    }
+
+    function makeShareLink(){
+      const raw = $('story-input').value.trim();
+      try{ validateStory(raw); }catch(e){ alert('Fix story before sharing: '+e.message); return; }
+      const enc = encodeURIComponent(raw);
+      const url = location.origin + location.pathname + '#story=' + enc;
+      navigator.clipboard.writeText(url).then(()=> alert('Play link copied to clipboard!'));
+    }
+
+    function tryLoadFromHash(){
+      if(location.hash.startsWith('#story=')){
+        const raw = decodeURIComponent(location.hash.slice(7));
+        try{
+          const story = validateStory(raw);
+          state.story = story; state.current = story.start; state.history=[]; setMode('play'); render();
+        }catch(e){ console.error(e); }
+      }
+    }
+
+    $('toggle-mode').onclick = ()=>{
+      const isEdit = !$('editor').classList.contains('hidden');
+      setMode(isEdit?'play':'edit');
+    };
+
+    $('validate').onclick = ()=>{
+      const raw = $('story-input').value.trim();
+      try{
+        const story = validateStory(raw);
+        state.story = story; state.current = story.start; state.history=[];
+        setMode('play'); render();
+      }catch(e){ alert(e.message); }
+    };
+
+    $('back').onclick = back;
+    $('restart').onclick = restart;
+    $('export-json').onclick = exportJSON;
+    $('import-json').onclick = importJSON;
+    $('copy-share').onclick = makeShareLink;
+
+    $('load-sample').onclick = ()=>{
+      const sample = {
+        title:"Happy Birthday, Explorer!",
+        start:"start",
+        nodes:{
+          start:{ text:"It's your birthday! A glowing gift appears with a tag: 'Open me?'.", choices:[{label:"Open it", to:"gift"},{label:"Wait and look around", to:"look"}] },
+          gift:{ text:"Confetti explodes! Inside is a clue leading to cake.", choices:[{label:"Follow the clue", to:"cake"},{label:"Save it for later", to:"look"}] },
+          look:{ text:"You notice two doors: one marked 'Memories', one 'Surprises'.", choices:[{label:"Memories", to:"mem"},{label:"Surprises", to:"surp"}] },
+          mem:{ text:"A slideshow of your favorite moments plays. 🥹", end:true },
+          surp:{ text:"Friends shout 'Happy Birthday!' from behind the couch! 🎉", end:true },
+          cake:{ text:"You find the cake with your name on it. Make a wish! ✨", end:true }
+        }
+      };
+      $('story-input').value = JSON.stringify(sample, null, 2);
+    };
+
+    tryLoadFromHash();
   </script>
 </body>
 </html>
