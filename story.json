@@ -1,0 +1,133 @@
+{
+  "title": "艾瑞克愛的大冒險",
+  "start": "Setting story(L0)",
+  "nodes": {
+    "Setting story(L0)": {
+      "text": "對你來說，今天是個重要的日子：你將要與你暗戀多年的女同學告白。你走向與她約好的地點準備告白。",
+      "choices": [
+        {"label": "櫻花樹下", "to": "sakura-BE1"},
+        {"label": "卡店", "to": "card store"}
+      ]
+    },
+    "sakura-BE1": {
+      "text": "不知過了多久，樹下仍然只有你一人，你被放鳥了。",
+      "end": true,
+      "endingType": "bad"
+    },
+    "card store": {
+      "text": "你抵達了卡店，看到了你暗戀許久的女孩站在門口，你臉上掛著微笑，向她打招呼。",
+      "choices": [
+        {"label": "嗨", "to": "not polite"},
+        {"label": "My lovely lady, you brighten up the place just by being here.", "to": "polite-BE2"}
+      ]
+    },
+    "polite-BE2": {
+      "text": "「你明明知道我英文不好，你是看不起我嗎？」，她打了你一巴掌後離開了。",
+      "end": true,
+      "endingType": "bad"
+    },
+    "not polite": {
+      "text": "她對你揮了揮手，說出了你的名字。",
+      "choices": [
+        {"label": "余權恆", "to": "yes"},
+        {"label": "不是余權恆", "to": "wtfru-BE3"}
+      ]
+    },
+    "yes": {
+      "text": "你也甜膩地說出了她的名字...",
+      "choices": [
+        {"label": "Tina", "to": "Tina"},
+        {"label": "Ina", "to": "Ina"},
+        {"label": "另一個 Eric", "to": "BL-BE4"}
+      ]
+    },
+    "wtfru-BE3": {
+      "text": "此時卡店老闆走出來，打了你一巴掌，說：「你他媽是誰，快給我滾。」",
+      "end": true,
+      "endingType": "bad"
+    },
+    "Tina": {
+      "text": "Tina: 什麼都不要問，跟我回台南吧。",
+      "choices": [
+        {"label": "跟她回台南", "to": "My new home-BE5"},
+        {"label": "跟她回台南", "to": "My new home-BE5"}
+      ]
+    },
+    "Ina": {
+      "text": "她對著你笑了笑，說：「今天找我來有什麼事嗎？」",
+      "choices": [
+        {"label": "直接告白", "to": "Failure-BE6"},
+        {"label": "決鬥！！！", "to": "Duel"}
+      ]
+    },
+    "BL-BE4": {
+      "text": "另一個Eric: 他默默地走向你，眼中泛著淚。「我喜歡你。」他悄悄地說，此時，你一言不發的將他抱緊，說：「我也是。」這一刻，你們兩個心中幸福滿溢，未來充滿了光明。(世上叫Eric的多如牛毛，絕對不是你想的那個。",
+      "end": true,
+      "endingType": "bad"
+    },
+    "My new home-BE5": {
+      "text": "從此以後，你和Tina過上了幸福的人生",
+      "end": true,
+      "endingType": "bad"
+    },
+    "Failure-BE6": {
+      "text": "Ina:「對不起，我對你沒那種意思，你是個好人。」 **你被拒絕了**",
+      "end": true,
+      "endingType": "bad"
+    },
+    "Duel": {
+      "text": "「來堂堂正正的決鬥吧！我贏了妳就得做我的老婆！」你慷慨激昂的說。此時你拿出你的武器。",
+      "choices": [
+        {"label": "長劍", "to": "loser-BE7"},
+        {"label": "弓箭", "to": "loser-BE7"},
+        {"label": "青眼白龍牌組", "to": "mystery person"}
+      ]
+    },
+    "loser-BE7": {
+      "text": "你被Ina的觸鬚輕易地打敗了，你的尊嚴被踐踏，你再也站不起來了",
+      "end": true,
+      "endingType": "bad"
+    },
+    "mystery person": {
+      "text": "你召喚的青眼白龍與Ina打的不分軒輊，本以為有機會獲勝，不幸的是，站在一旁的你被Ina的觸鬚波及，立即暈了過去，醒來後，你發現你在雲層之上，周圍朵朵的白雲。而你的面前有一位神秘人物，他是...",
+      "choices": [
+        {"label": "等等，這到底是誰？", "to": "betral-BE8"},
+        {"label": "丹尼神父", "to": "Danny"}
+      ]
+    },
+    "betral-BE8": {
+      "text": "「我當時天天照顧你，給你吃飯，你竟然連我都不認得，忘恩負義的小子，下地獄去吧！」",
+      "end": true,
+      "endingType": "bad"
+    },
+    "Danny": {
+      "text": "「沒錯，我的孩子，我可以實現你一個願望，你要什麼？」",
+      "choices": [
+        {"label": "我要Ina當我老婆", "to": "what a dreamer-BE9"},
+        {"label": "我要去蟹堡王吃蟹堡", "to": "Krusty Krab"}
+      ]
+    },
+    "what a dreamer-BE9": {
+      "text": "神父說:「你對Tina的愛實在是太令人動容了，我馬上送你去台南！！」你:「等等神父，你聽錯了，我是說...」不等你說完，你就已經被送到台南了。從此之後與Tina過著幸福的生活。",
+      "end": true,
+      "endingType": "bad"
+    },
+    "Krusty Krab": {
+      "text": "你被神父傳送到了蟹堡王...? 等等，這裡好像是我們的蟹堡王。 此時，章魚哥走到你的桌邊，說:「歡迎來到我們的蟹堡王，請問要點些什麼？」",
+      "choices": [
+        {"label": "今天是我生日", "to": "HBD Eric"},
+        {"label": "來一份美味蟹堡謝謝", "to": "at least you have something to eat-BE10"}
+      ]
+    },
+    "at least you have something to eat-BE10": {
+      "text": "你吃了美味蟹堡、炸海草、喝著海草汁，並滿足的回家了，但總感覺缺少了些什麼。",
+      "end": true,
+      "endingType": "bad"
+    },
+    "HBD Eric": {
+      "text": "可以唱我們的蟹堡王的生日快樂歌給我的小寶貝聽嗎？",
+      "end": true,
+      "endingType": "good"
+    }
+  }
+}

@@ -1,152 +1,283 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Choose Your Own Adventure – Birthday Edition</title>
+  <title>艾瑞克愛的大冒險 – CYOA</title>
   <style>
-    :root { --bg:#0f172a; --panel:#111827; --card:#0b1220; --ink:#e5e7eb; --muted:#94a3b8; --accent:#38bdf8; }
+    :root { --bg:#0f172a; --panel:#111827; --card:#0b1220; --ink:#e5e7eb; --muted:#94a3b8; --accent:#38bdf8; --good:#22c55e; --bad:#ef4444; }
     html,body{height:100%}
     body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Inter,Arial; background:radial-gradient(1000px 800px at 10% -10%, #1f2937 0, #0b1020 40%, #050812 100%); color:var(--ink)}
     .wrap{max-width:960px;margin:32px auto;padding:0 16px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
-    h1{font-size:clamp(1.1rem,3vw,1.6rem);margin:0;font-weight:700;letter-spacing:.3px}
-    .pill{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(180deg,#0b1324,#070a14);border:1px solid #1f2937;border-radius:999px;padding:8px 12px;color:var(--muted)}
-    .row{display:flex;gap:16px;align-items:stretch}
-    .col{flex:1}
-    .panel{background:linear-gradient(180deg,#0b1324,#070a14);border:1px solid #1f2937;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:16px}
-    .panel h2{margin:0 0 8px 0;font-size:1rem;color:var(--muted);font-weight:600}
-    textarea{width:100%;min-height:260px;background:#050a16;color:var(--ink);border:1px solid #1f2937;border-radius:12px;padding:12px;resize:vertical;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.95rem;line-height:1.4}
-    .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-    button{appearance:none;border:1px solid #1f2937;background:linear-gradient(180deg,#0c162a,#08101f);color:var(--ink);padding:10px 12px;border-radius:12px;font-weight:600;cursor:pointer}
-    button:hover{border-color:#334155}
-    button.accent{background:linear-gradient(180deg,#0284c7,#0369a1);border-color:#0ea5e9}
-    button.ghost{background:transparent}
-    .muted{color:var(--muted);font-size:.9rem}
+    header{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px}
+    h1{font-size:clamp(1.2rem,3.2vw,1.8rem);margin:0;font-weight:800;letter-spacing:.3px}
+    .panel{background:linear-gradient(180deg,#0b1324,#070a14);border:1px solid #1f2937;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:20px}
+    .center{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center}
+    .bigplay{font-size:clamp(1rem,2.6vw,1.3rem);padding:16px 22px;border-radius:999px;border:1px solid #0ea5e9;background:linear-gradient(180deg,#0284c7,#0369a1);color:white;font-weight:800;cursor:pointer}
+    .bigplay:hover{filter:brightness(1.05)}
     .player{display:flex;flex-direction:column;gap:12px}
-    .card{background:linear-gradient(180deg,#0a1428,#091124);border:1px solid #1f2937;border-radius:16px;padding:16px}
-    .title{font-size:1.1rem;font-weight:700;margin:0 0 4px}
-    .text{white-space:pre-wrap;line-height:1.6}
-    .choices{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .card{background:linear-gradient(180deg,#0a1428,#091124);border:1px solid #1f2937;border-radius:18px;padding:20px}
+    .title{font-size:1.1rem;font-weight:800;margin:0 0 6px}
+    .text{white-space:pre-wrap;line-height:1.75}
+    .choices{display:flex;flex-direction:column;gap:10px;margin-top:12px}
     .choice{display:block;text-align:left}
-    .toolbar{display:flex;justify-content:space-between;align-items:center;gap:8px}
+    button{appearance:none;border:1px solid #1f2937;background:linear-gradient(180deg,#0c162a,#08101f);color:var(--ink);padding:10px 12px;border-radius:12px;font-weight:700;cursor:pointer}
+    button:hover{border-color:#334155}
+    .toolbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
     .breadcrumbs{display:flex;flex-wrap:wrap;gap:6px}
     .crumb{font-size:.8rem;color:var(--muted);background:#0b1220;border:1px dashed #1f2937;border-radius:999px;padding:4px 8px}
-    .hidden{display:none}
-    .img-wrap{border-radius:12px;overflow:hidden;border:1px solid #1f2937}
+    /* IMPORTANT: make hidden always win over other display rules */
+    .hidden{display:none !important}
+    .img-wrap{border-radius:14px;overflow:hidden;border:1px solid #1f2937;margin-bottom:10px}
     img{max-width:100%;display:block}
-    @media (max-width:860px){.row{flex-direction:column}}
+
+    /* Ending styles */
+    .good-banner{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:14px}
+    .good-btn{font-size:clamp(1.1rem,3.5vw,1.6rem);padding:18px 26px;border-radius:999px;border:2px solid #16a34a;background:linear-gradient(180deg,#22c55e,#16a34a);color:#052e16;font-weight:900;cursor:default}
+    .good-btn:disabled{opacity:1}
+    .restart-btn{border-color:#b91c1c;background:linear-gradient(180deg,#ef4444,#b91c1c);color:#fff;font-weight:900}
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <h1>🎂 Birthday CYOA</h1>
-      <div class="pill">
-        <span id="mode-label">Edit Mode</span>
-        <button id="toggle-mode" class="ghost" title="Toggle editor / player">Toggle</button>
-      </div>
+      <h1>🎂 艾瑞克愛的大冒險</h1>
     </header>
 
-    <div id="editor" class="row">
-      <div class="col panel">
-        <h2>✍️ Paste your story JSON</h2>
-        <textarea id="story-input" spellcheck="false"></textarea>
-        <div class="btns">
-          <button id="validate" class="accent">Validate & Start ▶</button>
-          <button id="import-json">Import JSON</button>
-          <button id="export-json">Export JSON</button>
-          <button id="copy-share">Copy Play Link</button>
-          <button id="load-sample" title="Load a tiny demo story">Load Example</button>
-        </div>
-        <p class="muted">Schema: <code>{ title, start, nodes: { [id]: { text, image?, end?, choices?: [{label,to}] } } }</code>. Use <code>end:true</code> to mark an ending.</p>
-      </div>
+    <!-- Landing Screen -->
+    <div id="landing" class="panel center">
+      <p class="muted">Click to begin the story</p>
+      <button id="play" class="bigplay">▶ 開始遊戲 (Play)</button>
     </div>
 
+    <!-- Player -->
     <div id="player" class="player hidden">
       <div class="toolbar">
         <div class="breadcrumbs" id="crumbs"></div>
         <div>
-          <button id="back">← Back</button>
-          <button id="restart" class="ghost">⟲ Restart</button>
+          <button id="back">← 上一步</button>
+          <button id="restart">⟲ 重新開始</button>
         </div>
       </div>
       <div class="card">
         <div class="img-wrap hidden" id="img-wrap"><img id="node-img" alt=""/></div>
-        <h3 class="title" id="story-title">Your Adventure</h3>
+        <h3 class="title" id="story-title"></h3>
         <div class="text" id="node-text"></div>
         <div class="choices" id="choices"></div>
+        <div class="good-banner hidden" id="good-banner">
+          <img id="good-img" alt="Happy ending image"/>
+          <button class="good-btn" id="good-btn" disabled>Happy birthday Eric Yu 🎂</button>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    const $ = (id)=>document.getElementById(id);
-    const state = { story:null, current:null, history:[] };
+    // ====== Configuration ======
+    const GOOD_END_IMAGE_URL = "./img/1.jpg";
+
+    // Embedded story (fixed; no external input)
+    const STORY = {
+      "title": "艾瑞克愛的大冒險",
+      "start": "Setting story(L0)",
+      "nodes": {
+        "Setting story(L0)": {
+          "text": "對你來說，今天是個重要的日子：你將要與你暗戀多年的女同學告白。你走向與她約好的地點準備告白。",
+          "choices": [
+            {"label": "櫻花樹下", "to": "sakura-BE1"},
+            {"label": "卡店", "to": "card store"}
+          ]
+        },
+        "sakura-BE1": {
+          "text": "不知過了多久，樹下仍然只有你一人，你被放鳥了。",
+          "end": true,
+          "endingType": "bad"
+        },
+        "card store": {
+          "text": "你抵達了卡店，看到了你暗戀許久的女孩站在門口，你臉上掛著微笑，向她打招呼。",
+          "choices": [
+            {"label": "嗨", "to": "not polite"},
+            {"label": "My lovely lady, you brighten up the place just by being here.", "to": "polite-BE2"}
+          ]
+        },
+        "polite-BE2": {
+          "text": "「你明明知道我英文不好，你是看不起我嗎？」，她打了你一巴掌後離開了。",
+          "end": true,
+          "endingType": "bad"
+        },
+        "not polite": {
+          "text": "她對你揮了揮手，說出了你的名字。",
+          "choices": [
+            {"label": "余權恆", "to": "yes"},
+            {"label": "不是余權恆", "to": "wtfru-BE3"}
+          ]
+        },
+        "yes": {
+          "text": "你也甜膩地說出了她的名字...",
+          "choices": [
+            {"label": "Tina", "to": "Tina"},
+            {"label": "Ina", "to": "Ina"},
+            {"label": "另一個 Eric", "to": "BL-BE4"}
+          ]
+        },
+        "wtfru-BE3": {
+          "text": "此時卡店老闆走出來，打了你一巴掌，說：「你他媽是誰，快給我滾。」",
+          "end": true,
+          "endingType": "bad"
+        },
+        "Tina": {
+          "text": "Tina: 什麼都不要問，跟我回台南吧。",
+          "choices": [
+            {"label": "跟她回台南", "to": "My new home-BE5"},
+            {"label": "跟她回台南", "to": "My new home-BE5"}
+          ]
+        },
+        "Ina": {
+          "text": "她對著你笑了笑，說：「今天找我來有什麼事嗎？」",
+          "choices": [
+            {"label": "直接告白", "to": "Failure-BE6"},
+            {"label": "決鬥！！！", "to": "Duel"}
+          ]
+        },
+        "BL-BE4": {
+          "text": "另一個Eric: 他默默地走向你，眼中泛著淚。「我喜歡你。」他悄悄地說，此時，你一言不發的將他抱緊，說：「我也是。」這一刻，你們兩個心中幸福滿溢，未來充滿了光明。(世上叫Eric的多如牛毛，絕對不是你想的那個。",
+          "end": true,
+          "endingType": "bad"
+        },
+        "My new home-BE5": {
+          "text": "從此以後，你和Tina過上了幸福的人生",
+          "end": true,
+          "endingType": "bad"
+        },
+        "Failure-BE6": {
+          "text": "Ina:「對不起，我對你沒那種意思，你是個好人。」 **你被拒絕了**",
+          "end": true,
+          "endingType": "bad"
+        },
+        "Duel": {
+          "text": "「來堂堂正正的決鬥吧！我贏了妳就得做我的老婆！」你慷慨激昂的說。此時你拿出你的武器。",
+          "choices": [
+            {"label": "長劍", "to": "loser-BE7"},
+            {"label": "弓箭", "to": "loser-BE7"},
+            {"label": "青眼白龍牌組", "to": "mystery person"}
+          ]
+        },
+        "loser-BE7": {
+          "text": "你被Ina的觸鬚輕易地打敗了，你的尊嚴被踐踏，你再也站不起來了",
+          "end": true,
+          "endingType": "bad"
+        },
+        "mystery person": {
+          "text": "你召喚的青眼白龍與Ina打的不分軒輊，本以為有機會獲勝，不幸的是，站在一旁的你被Ina的觸鬚波及，立即暈了過去，醒來後，你發現你在雲層之上，周圍朵朵的白雲。而你的面前有一位神秘人物，他是...",
+          "choices": [
+            {"label": "等等，這到底是誰？", "to": "betral-BE8"},
+            {"label": "丹尼神父", "to": "Danny"}
+          ]
+        },
+        "betral-BE8": {
+          "text": "「我當時天天照顧你，給你吃飯，你竟然連我都不認得，忘恩負義的小子，下地獄去吧！】",
+          "end": true,
+          "endingType": "bad"
+        },
+        "Danny": {
+          "text": "「沒錯，我的孩子，我可以實現你一個願望，你要什麼？」",
+          "choices": [
+            {"label": "我要Ina當我老婆", "to": "what a dreamer-BE9"},
+            {"label": "我要去蟹堡王吃蟹堡", "to": "Krusty Krab"}
+          ]
+        },
+        "what a dreamer-BE9": {
+          "text": "神父說:「你對Tina的愛實在是太令人動容了，我馬上送你去台南！！」你:「等等神父，你聽錯了，我是說...」不等你說完，你就已經被送到台南了。從此之後與Tina過著幸福的生活。",
+          "end": true,
+          "endingType": "bad"
+        },
+        "Krusty Krab": {
+          "text": "你被神父傳送到了蟹堡王...? 等等，這裡好像是我們的蟹堡王。 此時，章魚哥走到你的桌邊，說:「歡迎來到我們的蟹堡王，請問要點些什麼？】",
+          "choices": [
+            {"label": "今天是我生日", "to": "HBD Eric"},
+            {"label": "來一份美味蟹堡謝謝", "to": "at least you have something to eat-BE10"}
+          ]
+        },
+        "at least you have something to eat-BE10": {
+          "text": "你吃了美味蟹堡、炸海草、喝著海草汁，並滿足的回家了，但總感覺缺少了些什麼。",
+          "end": true,
+          "endingType": "bad"
+        },
+        "HBD Eric": {
+          "text": "可以唱我們的蟹堡王的生日快樂歌給我的小寶貝聽嗎？",
+          "end": true,
+          "endingType": "good",
+          "image": "__GOOD_END_PLACEHOLDER__"
+        }
+      }
+    };
+
+    // ====== App ======
+    const $id = (id)=>document.getElementById(id);
+    const state = { story: STORY, current: null, history: [] };
 
     function setMode(mode){
       if(mode==='play'){
-        $('editor').classList.add('hidden');
-        $('player').classList.remove('hidden');
-        $('mode-label').textContent='Play Mode';
+        $id('landing').classList.add('hidden');
+        $id('player').classList.remove('hidden');
       } else {
-        $('editor').classList.remove('hidden');
-        $('player').classList.add('hidden');
-        $('mode-label').textContent='Edit Mode';
+        $id('landing').classList.remove('hidden');
+        $id('player').classList.add('hidden');
       }
-    }
-
-    function validateStory(raw){
-      let story;
-      try{ story = JSON.parse(raw); }catch(e){ throw new Error('Invalid JSON: '+e.message); }
-      if(!story || typeof story!=='object') throw new Error('Story must be an object.');
-      if(typeof story.title!=='string') throw new Error('Missing string "title"');
-      if(typeof story.start!=='string') throw new Error('Missing string "start" node id');
-      if(!story.nodes || typeof story.nodes!=='object') throw new Error('Missing "nodes" map');
-      if(!story.nodes[story.start]) throw new Error('Start node "'+story.start+'" not found');
-      for(const [id,node] of Object.entries(story.nodes)){
-        if(!node || typeof node!=='object') throw new Error('Node '+id+' must be an object');
-        if(typeof node.text!=='string') throw new Error('Node '+id+' missing string "text"');
-        if(node.choices){
-          if(!Array.isArray(node.choices)) throw new Error('Node '+id+' choices must be an array');
-          for(const c of node.choices){
-            if(typeof c.label!=='string' || typeof c.to!=='string') throw new Error('Node '+id+' has invalid choice {label,to}');
-            if(!story.nodes[c.to]) throw new Error('Choice from '+id+' points to missing node "'+c.to+'"');
-          }
-        }
-      }
-      return story;
     }
 
     function render(){
       const node = state.story.nodes[state.current];
-      $('story-title').textContent = state.story.title;
-      $('node-text').textContent = node.text;
-      if(node.image){
-        $('img-wrap').classList.remove('hidden');
-        $('node-img').src = node.image;
+      $id('story-title').textContent = state.story.title;
+      $id('node-text').textContent = node.text;
+
+      // Reset banners/choices each render
+      $id('good-banner').classList.add('hidden');
+      $id('choices').innerHTML = '';
+
+      // node image (non-ending)
+      if(node.image && node.endingType !== 'good'){
+        $id('img-wrap').classList.remove('hidden');
+        $id('node-img').src = node.image;
       } else {
-        $('img-wrap').classList.add('hidden');
-        $('node-img').removeAttribute('src');
+        $id('img-wrap').classList.add('hidden');
+        $id('node-img').removeAttribute('src');
       }
+
+      // breadcrumbs
       const crumbs = state.history.concat(state.current).map(id=>`<span class="crumb">${id}</span>`).join('');
-      $('crumbs').innerHTML = crumbs;
-      const box = $('choices');
-      box.innerHTML = '';
-      const isEnd = !!node.end || !node.choices || node.choices.length===0;
+      $id('crumbs').innerHTML = crumbs;
+
+      const isEnd = !!node.end;
       if(isEnd){
-        const b = document.createElement('button');
-        b.textContent = '🎉 The End — Play Again';
-        b.className='choice';
-        b.onclick = restart;
-        box.appendChild(b);
+        if(node.endingType === 'bad'){
+          const b = document.createElement('button');
+          b.textContent = '🔄 重新開始 (Restart)';
+          b.className='restart-btn';
+          b.onclick = restart;
+          $id('choices').appendChild(b);
+        } else if(node.endingType === 'good'){
+          // GOOD ending: show image + big disabled button
+          const url = node.image && node.image !== '__GOOD_END_PLACEHOLDER__' ? node.image : GOOD_END_IMAGE_URL;
+          if(url){
+            $id('good-img').src = url;
+            $id('good-img').style.maxHeight = '50vh';
+          }
+          $id('good-banner').classList.remove('hidden');
+        } else {
+          // default end behavior (restart)
+          const b = document.createElement('button');
+          b.textContent = '🎉 完結 — 重新開始';
+          b.onclick = restart;
+          $id('choices').appendChild(b);
+        }
       } else {
-        for(const c of node.choices){
+        for(const c of (node.choices||[])){
           const btn = document.createElement('button');
           btn.className='choice';
           btn.textContent = '• ' + c.label;
           btn.onclick = () => go(c.to);
-          box.appendChild(btn);
+          $id('choices').appendChild(btn);
         }
       }
     }
@@ -169,80 +300,18 @@
       render();
     }
 
-    function exportJSON(){
-      const blob = new Blob([$('story-input').value], {type:'application/json'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = (state.story?.title || 'cyoa') + '.json';
-      a.click();
-      URL.revokeObjectURL(a.href);
-    }
+    // Wire up
+    $id('play').onclick = ()=>{ state.current = state.story.start; setMode('play'); render(); };
+    $id('back').onclick = back;
+    $id('restart').onclick = restart;
 
-    function importJSON(){
-      const input = document.createElement('input');
-      input.type='file'; input.accept='.json,application/json';
-      input.onchange = () => {
-        const file = input.files[0]; if(!file) return;
-        file.text().then(txt=>{ $('story-input').value = txt; });
-      };
-      input.click();
-    }
-
-    function makeShareLink(){
-      const raw = $('story-input').value.trim();
-      try{ validateStory(raw); }catch(e){ alert('Fix story before sharing: '+e.message); return; }
-      const enc = encodeURIComponent(raw);
-      const url = location.origin + location.pathname + '#story=' + enc;
-      navigator.clipboard.writeText(url).then(()=> alert('Play link copied to clipboard!'));
-    }
-
-    function tryLoadFromHash(){
-      if(location.hash.startsWith('#story=')){
-        const raw = decodeURIComponent(location.hash.slice(7));
-        try{
-          const story = validateStory(raw);
-          state.story = story; state.current = story.start; state.history=[]; setMode('play'); render();
-        }catch(e){ console.error(e); }
+    // Swap in GOOD image placeholder
+    (function applyGoodImage(){
+      const goodNode = state.story.nodes['HBD Eric'];
+      if(goodNode && goodNode.image === '__GOOD_END_PLACEHOLDER__'){
+        goodNode.image = GOOD_END_IMAGE_URL;
       }
-    }
-
-    $('toggle-mode').onclick = ()=>{
-      const isEdit = !$('editor').classList.contains('hidden');
-      setMode(isEdit?'play':'edit');
-    };
-
-    $('validate').onclick = ()=>{
-      const raw = $('story-input').value.trim();
-      try{
-        const story = validateStory(raw);
-        state.story = story; state.current = story.start; state.history=[];
-        setMode('play'); render();
-      }catch(e){ alert(e.message); }
-    };
-
-    $('back').onclick = back;
-    $('restart').onclick = restart;
-    $('export-json').onclick = exportJSON;
-    $('import-json').onclick = importJSON;
-    $('copy-share').onclick = makeShareLink;
-
-    $('load-sample').onclick = ()=>{
-      const sample = {
-        title:"Happy Birthday, Explorer!",
-        start:"start",
-        nodes:{
-          start:{ text:"It's your birthday! A glowing gift appears with a tag: 'Open me?'.", choices:[{label:"Open it", to:"gift"},{label:"Wait and look around", to:"look"}] },
-          gift:{ text:"Confetti explodes! Inside is a clue leading to cake.", choices:[{label:"Follow the clue", to:"cake"},{label:"Save it for later", to:"look"}] },
-          look:{ text:"You notice two doors: one marked 'Memories', one 'Surprises'.", choices:[{label:"Memories", to:"mem"},{label:"Surprises", to:"surp"}] },
-          mem:{ text:"A slideshow of your favorite moments plays. 🥹", end:true },
-          surp:{ text:"Friends shout 'Happy Birthday!' from behind the couch! 🎉", end:true },
-          cake:{ text:"You find the cake with your name on it. Make a wish! ✨", end:true }
-        }
-      };
-      $('story-input').value = JSON.stringify(sample, null, 2);
-    };
-
-    tryLoadFromHash();
+    })();
   </script>
 </body>
 </html>
